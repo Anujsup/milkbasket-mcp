@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "Milk Basket MCP": {
+      "command": "node",
+      "args": ["dist/index.js"]
+    }
+  }
+}
