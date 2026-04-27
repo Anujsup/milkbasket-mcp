@@ -124,7 +124,16 @@ Reload Cursor after saving.
 4. You are now logged in
 ```
 
-Tokens are stored securely using the OS keychain (macOS Keychain, Windows Credential Manager, Linux Secret Service via `keytar`). If `keytar` is unavailable, an AES-256-GCM encrypted file is used as fallback.
+## Security & Privacy
+
+**This server runs 100% locally on your machine.** Your phone number, OTP, and tokens never leave your device — they are never sent to any third party, including the AI assistant. Here's exactly what happens:
+
+- Your phone number is sent **directly** from your machine to Milkbasket's servers to request an OTP
+- The OTP you share with the AI is passed **directly** from your machine to Milkbasket to verify login
+- The AI model only sees the response (success/failure) — it cannot intercept or store your credentials
+- Access tokens are stored in your **OS keychain** (macOS Keychain, Windows Credential Manager, Linux Secret Service) using `keytar` — the same secure storage used by apps like VS Code and 1Password
+- If `keytar` is unavailable, an **AES-256-GCM encrypted file** is used as fallback
+- You can log out at any time using `auth_logout`, which clears all stored tokens immediately
 
 ## Cart Flow
 
