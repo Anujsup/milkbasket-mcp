@@ -314,6 +314,36 @@ const PRODUCT_DOSSIER_FRAGMENT = `
   }
 `;
 
+export const GET_MEGA_FLASH_DEAL_QUERY = `
+  query getMegaFlashDeal($id: Float!) {
+    getMegaFlashDeal(id: $id) {
+      id
+      title
+      description
+      maxQtyLabel
+      movLabel
+      dealStatusLabel
+      availedQuantity
+      subtitleValues {
+        key
+        value
+      }
+      status
+      serverCurrentTime
+      startTime
+      endTime
+      mov
+      maxQty
+      listId
+      isMovReached
+      basketValue
+      headerImage
+      backgroundImage
+      percentage
+    }
+  }
+`;
+
 export const GET_MEGA_FLASH_DEAL_PRODUCTS_QUERY = `
   query getMegaFlashDealProducts($listId: String!, $page: PaginationInput!, $showInStockOnly: Boolean) {
     getMegaFlashDealProducts(

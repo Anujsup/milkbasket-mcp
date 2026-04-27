@@ -8,6 +8,11 @@ This project follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) an
 
 ## [Unreleased]
 
+### Added
+- `get_flash_deals` tool: fetch today's Mega Flash Deal products without needing to look up a listId (defaults to collection `157975`).
+- `get_flash_deal_status` tool: fetch deal metadata (eligibility, basket progress, timing, status label) for a Mega Flash Deal.
+- `add_flash_deal_to_cart` tool: add a Mega Flash Deal product to cart for free using the correct `flashDealId` and `type: 6` payload fields.
+
 ---
 
 ## [1.0.2] — 2026-04-27

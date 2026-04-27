@@ -5,6 +5,7 @@ import {
   FETCH_BASKET_QUERY,
   GET_EXTENDED_BASKET_QUERY,
   GET_HERO_COLLECTION_QUERY,
+  GET_MEGA_FLASH_DEAL_QUERY,
   GET_MEGA_FLASH_DEAL_PRODUCTS_QUERY,
   GET_SEARCH_PRODUCTS_QUERY,
   ADD_TO_BASKET_MUTATION,
@@ -369,6 +370,40 @@ export async function getHeroCollections() {
   return data.getHeroCollection.collection;
 }
 
+// ─── Flash deal status ────────────────────────────────────────────────────────
+
+interface MegaFlashDeal {
+  id: number;
+  title: string;
+  description: string;
+  maxQtyLabel: string;
+  movLabel: string;
+  dealStatusLabel: string;
+  availedQuantity: number;
+  subtitleValues: Array<{ key: string; value: string }>;
+  status: number;
+  serverCurrentTime: string;
+  startTime: string;
+  endTime: string;
+  mov: number;
+  maxQty: number;
+  listId: number;
+  isMovReached: boolean;
+  basketValue: number;
+  percentage: number;
+  headerImage: string | null;
+  backgroundImage: string | null;
+}
+
+export async function getFlashDealStatus(id: number) {
+  const data = await gqlRequest<{ getMegaFlashDeal: MegaFlashDeal }>(
+    GET_MEGA_FLASH_DEAL_QUERY,
+    { id },
+    { operationName: "getMegaFlashDeal", requiresAuth: true }
+  );
+  return data.getMegaFlashDeal;
+}
+
 // ─── List products by listId ──────────────────────────────────────────────────
 
 interface ProductListResponse {
@@ -559,6 +594,70 @@ export async function addToCart(params: {
   return {
     success: true,
     action: params.quantity === 0 ? "removed" : "added",
+    deliveryDate,
+    basket: basket
+      ? {
+          id: basket.id,
+          date: basket.date,
+          totalItems: basket.quantity,
+          total: basket.billDetails?.total ?? "₹0.00",
+          savings: basket.billDetails?.subSavings ?? "₹0.00",
+          products: basket.products.map((p) => ({
+            id: p.id,
+            name: p.name,
+            weight: p.weight?.text ?? null,
+            quantity: p.order.quantity,
+            price: p.price.price?.amount ?? null,
+            image: p.assets?.image?.url ?? null,
+          })),
+        }
+      : null,
+    appliedOffers: result.appliedOffers?.map((o) => o.productName) ?? [],
+    isMembershipApplied: result.isMembershipApplied,
+  };
+}
+
+export async function addFlashDealToCart(params: {
+  productId: number;
+  flashDealId: number;
+  date?: string;
+}) {
+  const deliveryDate = params.date ?? getTomorrowDate();
+
+  const data = await gqlRequest<AddToBasketResponse>(
+    ADD_TO_BASKET_MUTATION,
+    {
+      payload: {
+        productId: params.productId,
+        quantity: 1,
+        price: 0,
+        date: deliveryDate,
+        bypassTimeCheck: false,
+        appVersion: APP_VERSION,
+        offerIds: [],
+        fetchOffers: true,
+        params: { flashDealId: params.flashDealId },
+        type: 6,
+      },
+    },
+    { operationName: "addToBasket", requiresAuth: true }
+  );
+
+  const result = data.addToBasket;
+
+  if (result.error) {
+    return {
+      success: false,
+      error: result.error.errorMsg || result.error.error,
+      nextOrderDate: result.error.nextOrderDate,
+    };
+  }
+
+  const basket = result.basket;
+
+  return {
+    success: true,
+    action: "flash_deal_added",
     deliveryDate,
     basket: basket
       ? {

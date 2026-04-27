@@ -10,9 +10,11 @@ import {
   getBasket,
   getExtendedBasket,
   getHeroCollections,
+  getFlashDealStatus,
   listProducts,
   searchProducts,
   addToCart,
+  addFlashDealToCart,
   removeFromCart,
 } from "./products/products.service.js";
 import { AuthRequiredError } from "./graphql/client.js";
@@ -284,6 +286,138 @@ server.registerTool(
 );
 
 server.registerTool(
+  "get_flash_deals",
+  {
+    description:
+      "Fetch today's Mega Flash Deal products — items that are free or heavily discounted for the day. " +
+      "Returns paginated products with name, weight, MRP, selling price, discount %, and stock status. " +
+      "Requires authentication. Uses listId '157975' by default (the flash deals collection). " +
+      "IMPORTANT: To add any product from this list to the cart, always use add_flash_deal_to_cart — never use add_to_cart for flash deal items.",
+    inputSchema: {
+      listId: z
+        .string()
+        .optional()
+        .default("157975")
+        .describe("Flash deals collection ID (default: '157975')"),
+      page: z.number().int().min(1).optional().default(1).describe("Page number (default: 1)"),
+      limit: z
+        .number()
+        .int()
+        .min(1)
+        .max(50)
+        .optional()
+        .default(15)
+        .describe("Number of products per page (default: 15, max: 50)"),
+      showInStockOnly: z
+        .boolean()
+        .optional()
+        .default(false)
+        .describe("If true, only return in-stock products (default: false)"),
+    },
+  },
+  async ({ listId, page, limit, showInStockOnly }) => {
+    try {
+      const result = await listProducts({ listId, page, limit, showInStockOnly });
+      return jsonResponse({
+        flashDeals: true,
+        pagination: result.pages,
+        products: result.products.map(formatProductDossier),
+      });
+    } catch (err) {
+      return errorResponse(err);
+    }
+  }
+);
+
+server.registerTool(
+  "get_flash_deal_status",
+  {
+    description:
+      "Get the status and eligibility details of a Mega Flash Deal. " +
+      "Returns deal terms, your current basket value vs the minimum required, " +
+      "how many free items you have claimed vs the maximum allowed, deal timing, " +
+      "and a human-readable status message explaining what you need to do to unlock the deal. " +
+      "Use this to check why a flash deal item could not be added to cart. " +
+      "Requires authentication. Default deal ID is 11732.",
+    inputSchema: {
+      id: z
+        .number()
+        .optional()
+        .default(11732)
+        .describe("Flash deal ID (default: 11732)"),
+    },
+  },
+  async ({ id }) => {
+    try {
+      const deal = await getFlashDealStatus(id);
+      return jsonResponse({
+        id: deal.id,
+        description: deal.description,
+        status: deal.status === 1 ? "active" : "inactive",
+        dealStatusLabel: deal.dealStatusLabel,
+        eligibility: {
+          isMovReached: deal.isMovReached,
+          basketValue: deal.basketValue,
+          minimumOrderValue: deal.mov,
+          movLabel: deal.movLabel || null,
+        },
+        progress: {
+          availedQuantity: deal.availedQuantity,
+          maxQty: deal.maxQty,
+          maxQtyLabel: deal.maxQtyLabel || null,
+          percentage: deal.percentage,
+        },
+        timing: {
+          startTime: deal.startTime,
+          endTime: deal.endTime,
+          serverCurrentTime: deal.serverCurrentTime,
+        },
+        listId: String(deal.listId),
+      });
+    } catch (err) {
+      return errorResponse(err);
+    }
+  }
+);
+
+server.registerTool(
+  "add_flash_deal_to_cart",
+  {
+    description:
+      "Add a Mega Flash Deal product to the cart for free. " +
+      "Use this instead of add_to_cart for flash deal items (price is always 0). " +
+      "Requires the productId from get_flash_deals. flashDealId defaults to 11732. " +
+      "Try adding directly — if it fails with an eligibility error, then call get_flash_deal_status to diagnose (e.g. basket is empty, deal expired, or max quantity already reached) and guide the user accordingly. " +
+      "Do NOT call get_flash_deal_status before every add — only use it to explain a failure. " +
+      "Requires authentication.",
+    inputSchema: {
+      productId: z
+        .number()
+        .int()
+        .describe("The product ID from get_flash_deals"),
+      flashDealId: z
+        .number()
+        .int()
+        .optional()
+        .default(11732)
+        .describe("The flash deal ID from get_flash_deal_status (default: 11732)"),
+      date: z
+        .string()
+        .optional()
+        .describe("Delivery date in YYYY-MM-DD format (defaults to tomorrow)"),
+    },
+  },
+  async ({ productId, flashDealId, date }) => {
+    try {
+      const result = await addFlashDealToCart({ productId, flashDealId, date });
+      return jsonResponse(result);
+    } catch (err) {
+      return errorResponse(err);
+    }
+  }
+);
+
+server.registerTool(
   "search_products",
   {
     description:
@@ -322,6 +456,7 @@ server.registerTool(
       "Add a NEW product to the basket or INCREASE the quantity of an existing product. " +
       "Use this only when the quantity is going UP (e.g. adding a product for the first time, or bumping qty from 2 to 3). " +
       "To DECREASE quantity or DELETE a product from the cart, use remove_from_cart instead. " +
+      "For flash deal products (free items from get_flash_deals), use add_flash_deal_to_cart instead. " +
       "Requires authentication. Get productId and price from search_products or list_products.",
     inputSchema: {
       productId: z
