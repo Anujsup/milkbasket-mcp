@@ -24,7 +24,7 @@ An MCP (Model Context Protocol) server for the [Milkbasket](https://www.milkbask
   "mcpServers": {
     "milkbasket": {
       "command": "npx",
-      "args": ["-y", "@anujsup/milkbasket-mcp"]
+      "args": ["-y", "@anujsup/milkbasket-mcp@latest"]
     }
   }
 }
@@ -72,7 +72,7 @@ Add the config to `.cursor/mcp.json` in your project root (project-level) or `~/
   "mcpServers": {
     "milkbasket": {
       "command": "npx",
-      "args": ["-y", "@anujsup/milkbasket-mcp"]
+      "args": ["-y", "@anujsup/milkbasket-mcp@latest"]
     }
   }
 }
