@@ -1,6 +1,14 @@
-# milkbasket-mcp
+# @anujsup/milkbasket-mcp
 
-An MCP (Model Context Protocol) server for the [Milkbasket](https://www.milkbasket.com/) grocery API. Connect your AI assistant to your Milkbasket account and let it handle your daily groceries — log in with OTP, browse products, build your cart, check your wallet, and review your full order summary, all through natural language.
+[![npm version](https://img.shields.io/npm/v/@anujsup/milkbasket-mcp)](https://www.npmjs.com/package/@anujsup/milkbasket-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/@anujsup/milkbasket-mcp)](https://www.npmjs.com/package/@anujsup/milkbasket-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP](https://img.shields.io/badge/MCP-compatible-blue)](https://modelcontextprotocol.io)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
+
+> AI-powered grocery shopping for India — a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for the [Milkbasket](https://www.milkbasket.com/) API.
+
+Connect your AI assistant (Cursor, Claude Desktop, Windsurf, or any MCP client) to your Milkbasket account and let it handle your daily groceries — log in with OTP, browse products, build your cart, check your wallet, and review your full order summary, all through natural language.
 
 **What you can do with this:**
 - Ask your AI to find products — "Search for low-fat milk under ₹50"
