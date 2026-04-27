@@ -1,6 +1,6 @@
 {
-  "name": "milkbasket-mcp",
-  "version": "1.0.1",
+  "name": "@anujsup/milkbasket-mcp",
+  "version": "1.0.0",
   "description": "MCP server for the Milkbasket grocery API — authenticate, search products, manage cart, and check wallet balance from any MCP client (Cursor, Claude Desktop, etc.)",
   "type": "module",
   "main": "dist/index.js",
@@ -33,6 +33,10 @@
     "type": "git",
     "url": "git+https://github.com/Anujsup/milkbasket-mcp.git"
   },
+  "bugs": {
+    "url": "https://github.com/Anujsup/milkbasket-mcp/issues"
+  },
+  "homepage": "https://github.com/Anujsup/milkbasket-mcp#readme",
   "engines": {
     "node": ">=18"
   },

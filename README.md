@@ -24,7 +24,7 @@ An MCP (Model Context Protocol) server for the [Milkbasket](https://www.milkbask
   "mcpServers": {
     "milkbasket": {
       "command": "npx",
-      "args": ["-y", "milkbasket-mcp"]
+      "args": ["-y", "@anujsup/milkbasket-mcp"]
     }
   }
 }
@@ -33,7 +33,7 @@ An MCP (Model Context Protocol) server for the [Milkbasket](https://www.milkbask
 ### Option 2: Global install
 
 ```bash
-npm install -g milkbasket-mcp
+npm install -g @anujsup/milkbasket-mcp
 ```
 
 ```json
@@ -49,7 +49,7 @@ npm install -g milkbasket-mcp
 ### Option 3: Local install
 
 ```bash
-npm install milkbasket-mcp
+npm install @anujsup/milkbasket-mcp
 ```
 
 ```json
@@ -57,7 +57,7 @@ npm install milkbasket-mcp
   "mcpServers": {
     "milkbasket": {
       "command": "node",
-      "args": ["node_modules/milkbasket-mcp/dist/index.js"]
+      "args": ["node_modules/@anujsup/milkbasket-mcp/dist/index.js"]
     }
   }
 }
@@ -72,7 +72,7 @@ Add the config to `.cursor/mcp.json` in your project root (project-level) or `~/
   "mcpServers": {
     "milkbasket": {
       "command": "npx",
-      "args": ["-y", "milkbasket-mcp"]
+      "args": ["-y", "@anujsup/milkbasket-mcp"]
     }
   }
 }
