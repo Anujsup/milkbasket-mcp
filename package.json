@@ -1,6 +1,6 @@
 {
   "name": "milkbasket-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server for the Milkbasket grocery API — authenticate, search products, manage cart, and check wallet balance from any MCP client (Cursor, Claude Desktop, etc.)",
   "type": "module",
   "main": "dist/index.js",
@@ -12,17 +12,26 @@
   ],
   "keywords": [
     "mcp",
+    "mcp-server",
+    "model-context-protocol",
     "milkbasket",
     "grocery",
+    "grocery-delivery",
+    "india",
     "cursor",
+    "claude",
     "ai-tools",
-    "model-context-protocol"
+    "ai-agent",
+    "shopping-cart",
+    "graphql",
+    "authentication",
+    "otp"
   ],
   "license": "MIT",
   "author": "Anujsup",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Anujsup/milkbasket-mcp.git"
+    "url": "git+https://github.com/Anujsup/milkbasket-mcp.git"
   },
   "engines": {
     "node": ">=18"
